@@ -1,0 +1,6 @@
+application:
+  workers:
+    alphaWorker:
+      batchSize: 10
+    betaWorker:
+      batchSize: 20
