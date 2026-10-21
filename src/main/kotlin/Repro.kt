@@ -1,13 +1,16 @@
 import com.sksamuel.hoplite.ConfigLoaderBuilder
 import com.sksamuel.hoplite.sources.EnvironmentVariablesPropertySource
+import com.sksamuel.hoplite.ExperimentalHoplite
 
 data class Config(val application: Application)
 data class Application(val workers: Map<String, Worker>)
 data class Worker(val batchSize: Int)
 
+@OptIn(ExperimentalHoplite::class)
 fun main(args: Array<String>) {
     if (args.contains("--process-env")) {
         val config = ConfigLoaderBuilder.default()
+            .withExplicitSealedTypes()
             .build()
             .loadConfigOrThrow<Config>(listOf("application.yaml"))
         println(config.application.workers)
@@ -33,6 +36,7 @@ fun main(args: Array<String>) {
     var failures = 0
     for ((label, environment) in cases) {
         val config = ConfigLoaderBuilder.defaultWithoutPropertySources()
+            .withExplicitSealedTypes()
             .addSource(EnvironmentVariablesPropertySource(environmentVariableMap = { environment }))
             .build()
             .loadConfigOrThrow<Config>(listOf("application.yaml"))
